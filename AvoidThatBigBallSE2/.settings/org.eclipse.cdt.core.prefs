@@ -1,6 +1,0 @@
-eclipse.preferences.version=1
-environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.961493337/PATH/delimiter=\:
-environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.961493337/PATH/operation=replace
-environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.961493337/PATH/value=/bin\:/usr/bin/\:/opt/ros/indigo/bin\:/home/morten/roswork/catkin_ws/devel/bin\:/home/morten/roswork/sdu/devel/bin\:/opt/eclipse\:/home/morten/bin\:/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/usr/games\:/usr/local/games
-environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.961493337/append=true
-environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.961493337/appendContributed=true
