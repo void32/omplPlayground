@@ -42,10 +42,14 @@ bool isStateValid(const ob::State *state)
 	const double& y = pos->values[1];
 
 	//radius of that-Big-Ball
-	const double r = 0.050; //it's an evil ball;-)
+	const double r = 0.7; //it's an evil ball;-)
+
+	//center position of the ball
+	const double xBallCenter = 0.0;
+	const double yBallCenter = -1.0;
 
 	//distance to the center of that big ball in the middle must be grater than radius
-	return sqrt((x-0.0)*(x-0.0) + (y-0.0)*(y-0.0)) < r;
+	return sqrt((x-xBallCenter)*(x-xBallCenter) + (y-yBallCenter)*(y-yBallCenter)) > r;
 }
 
 ////// ompl::geometric::SimpleSetup Class /////
@@ -68,15 +72,15 @@ void planWithSimpleSetup(void)
 	// Create a random start state:
 	ob::ScopedState<ompl::base::SE2StateSpace> start(space);
 	//start.random();
-	start->setX(0.75);
-	start->setY(0.75);
+	start->setX(0.85);
+	start->setY(0.85);
 	start->setYaw(0.0);
 
 	//Create a random goal state:
 	ob::ScopedState<ompl::base::SE2StateSpace> goal(space);
 	//goal.random();
-	goal->setX(-0.66);
-	goal->setY(-0.66);
+	goal->setX(-0.75);
+	goal->setY(-0.75);
 	goal->setYaw(0.0);
 
 	//Set these states as start and goal for SimpleSetup
