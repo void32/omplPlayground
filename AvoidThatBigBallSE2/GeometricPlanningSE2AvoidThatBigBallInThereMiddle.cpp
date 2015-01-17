@@ -21,6 +21,12 @@
 namespace ob = ompl::base;
 namespace og = ompl::geometric;
 
+//center position of the ball
+double xBallCenter = 0.0;
+double yBallCenter = 0.0;
+
+double ballRadius = 0.6;
+
 bool isStateValid(const ob::State *state)
 {
 	// cast the abstract state type to the type we expect
@@ -32,25 +38,19 @@ bool isStateValid(const ob::State *state)
 	// extract the second component of the state and cast it to what we expect
 	const ob::SO2StateSpace::StateType *rot = SE2state->as<ob::SO2StateSpace::StateType>(1);
 
-	// check validity of state defined by pos & rot..
+	// check validity of state defined by pos & rot...
 	static_cast<void>(pos);
 	static_cast<void>(rot);
-
 
 	// Extract the robot's (x,y) position from its state
 	const double& x = pos->values[0];
 	const double& y = pos->values[1];
 
-	//radius of that-Big-Ball
-	const double r = 0.7; //it's an evil ball;-)
-
-	//center position of the ball
-	const double xBallCenter = 0.0;
-	const double yBallCenter = -1.0;
-
 	//distance to the center of that big ball in the middle must be grater than radius
-	return sqrt((x-xBallCenter)*(x-xBallCenter) + (y-yBallCenter)*(y-yBallCenter)) > r;
+	return sqrt((x-xBallCenter)*(x-xBallCenter) + (y-yBallCenter)*(y-yBallCenter)) > ballRadius;
 }
+
+
 
 ////// ompl::geometric::SimpleSetup Class /////
 void planWithSimpleSetup(void)
@@ -94,13 +94,19 @@ void planWithSimpleSetup(void)
 	{
 		std::cout << "Found solution:" << std::endl;
 		// print the (simplified) path to screen
-		//ss.simplifySolution();
+		ss.simplifySolution(); //Make the found path simpler
 		ss.getSolutionPath().print(std::cout); //print solution
 
-		//make path file to plot
-		std::string filename = "/tmp/path.txt";
-		std::ofstream path_ofstream (filename.c_str());
+		//make path txt-file used by plot.py
+		std::string filenamePath = "/tmp/path.txt";
+		std::ofstream path_ofstream (filenamePath.c_str());
 		ss.getSolutionPath().printAsMatrix(path_ofstream);
+
+		//make ball txt-file used by plot.py
+		std::string filenameBall = "/tmp/ball.txt";
+		std::ofstream ball_ofstream (filenameBall.c_str());
+		ball_ofstream << xBallCenter << " " << xBallCenter << " " << ballRadius << std::endl;
+
 	}
 }
 
