@@ -18,6 +18,8 @@
 #include <iostream>
 #include <fstream>
 
+#include <stdlib.h> //execute a shell command - run plot.py
+
 namespace ob = ompl::base;
 namespace og = ompl::geometric;
 
@@ -106,7 +108,6 @@ void planWithSimpleSetup(void)
 		std::string filenameBall = "/tmp/ball.txt";
 		std::ofstream ball_ofstream (filenameBall.c_str());
 		ball_ofstream << xBallCenter << " " << xBallCenter << " " << ballRadius << std::endl;
-
 	}
 }
 
@@ -115,6 +116,10 @@ int main()
 	std::cout << "OMPL version: " << OMPL_VERSION << std::endl;
 
 	planWithSimpleSetup(); // Using the ompl::geometric::SimpleSetup Class
+
+	//execute a shell command to show plot
+	std::string shellCommand = "python plot.py";
+	system(shellCommand.c_str());
 
 	return 0;
 }
