@@ -1,5 +1,7 @@
-13:39:39 **** Clean-only build of configuration Debug for project AvoidThatBigBallSE2 ****
-rm -rf AvoidThatBigBallSE2 GeometricPlanningSE2AvoidThatBigBallInThereMiddle.o GeometricPlanningSE2AvoidThatBigBallInThereMiddle.d 
+13:41:50 **** Rebuild of configuration Debug for project AvoidThatBigBallSE2 ****
+Info: Internal Builder is used for build
+g++ -I/usr/local/include -I/usr/local/include/ompl/ -I/usr/local/include/omplapp/ -O0 -g3 -Wall -c -fmessage-length=0 -o GeometricPlanningSE2AvoidThatBigBallInThereMiddle.o ../GeometricPlanningSE2AvoidThatBigBallInThereMiddle.cpp 
+g++ -L/usr/local/lib -L/usr/local/share -L/usr/local/lib/x86_64-linux-gnu/ -o AvoidThatBigBallSE2 GeometricPlanningSE2AvoidThatBigBallInThereMiddle.o -lompl 
 
-13:39:39 Build Finished (took 105ms)
+13:41:54 Build Finished (took 3s.167ms)
 
