@@ -1,0 +1,128 @@
+/*
+ * GeometricPlanningRigidBody3D.cpp
+ *
+ *  Created on: Jan 13, 2015
+ *      Author: Morten Albeck Nielsen
+ */
+
+#include <ompl/base/SpaceInformation.h>
+#include <ompl/base/spaces/SE2StateSpace.h>
+#include <ompl/geometric/planners/rrt/RRTConnect.h>
+#include <ompl/geometric/SimpleSetup.h>
+
+#include <ompl/geometric/PathGeometric.h>
+#include <ompl/geometric/PathSimplifier.h>
+
+
+#include <ompl/config.h>
+#include <iostream>
+#include <fstream>
+
+namespace ob = ompl::base;
+namespace og = ompl::geometric;
+
+struct Ball{
+	xCenter,
+	yCenter,
+	radiusCenter
+} ball;
+
+bool isStateValid(const ob::State *state)
+{
+	// cast the abstract state type to the type we expect
+	const ob::SE2StateSpace::StateType *SE2state = state->as<ob::SE2StateSpace::StateType>();
+
+	// extract the first component of the state and cast it to what we expect - here it is the position
+	const ob::RealVectorStateSpace::StateType *pos = SE2state->as<ob::RealVectorStateSpace::StateType>(0);
+
+	// extract the second component of the state and cast it to what we expect
+	const ob::SO2StateSpace::StateType *rot = SE2state->as<ob::SO2StateSpace::StateType>(1);
+
+	// check validity of state defined by pos & rot..
+	static_cast<void>(pos);
+	static_cast<void>(rot);
+
+
+	// Extract the robot's (x,y) position from its state
+	const double& x = pos->values[0];
+	const double& y = pos->values[1];
+
+	//radius of that-Big-Ball
+	const double r = 0.7; //it's an evil ball;-)
+
+	//center position of the ball
+	const double xBallCenter = 0.0;
+	const double yBallCenter = 0.0;
+
+	//distance to the center of that big ball in the middle must be grater than radius
+	return sqrt((x-xBallCenter)*(x-xBallCenter) + (y-yBallCenter)*(y-yBallCenter)) > r;
+}
+
+
+
+////// ompl::geometric::SimpleSetup Class /////
+void planWithSimpleSetup(void)
+{
+	// construct the state space we are planning in
+	ob::StateSpacePtr space(new ob::SE2StateSpace()); //SE2 domain
+
+	// set the bounds for the R^2 part of SE(2)
+	ob::RealVectorBounds bounds(2); //Bounding box
+	bounds.setLow(-1);
+	bounds.setHigh(1);
+	space->as<ob::SE2StateSpace>()->setBounds(bounds);
+
+	og::SimpleSetup ss(space); //This is the setup object that simplify things for ous
+
+	// Set the state validity checker
+	ss.setStateValidityChecker(boost::bind(&isStateValid, _1));
+
+	// Create a random start state:
+	ob::ScopedState<ompl::base::SE2StateSpace> start(space);
+	//start.random();
+	start->setX(0.85);
+	start->setY(0.85);
+	start->setYaw(0.0);
+
+	//Create a random goal state:
+	ob::ScopedState<ompl::base::SE2StateSpace> goal(space);
+	//goal.random();
+	goal->setX(-0.75);
+	goal->setY(-0.75);
+	goal->setYaw(0.0);
+
+	//Set these states as start and goal for SimpleSetup
+	ss.setStartAndGoalStates(start, goal);
+
+	//We can now try to solve the problem...
+	ob::PlannerStatus solved = ss.solve(1.0);
+
+	//..If this value can be cast to true, a solution was found.
+	if (solved)
+	{
+		std::cout << "Found solution:" << std::endl;
+		// print the (simplified) path to screen
+		ss.simplifySolution();
+		ss.getSolutionPath().print(std::cout); //print solution
+
+		//make path txt-file used by plot.py
+		std::string filenamePath = "/tmp/path.txt";
+		std::ofstream path_ofstream (filenamePath.c_str());
+		ss.getSolutionPath().printAsMatrix(path_ofstream);
+
+		//make ball txt-file used by plot.py
+		std::string filenameBall = "/tmp/ball.txt";
+		std::ofstream ball_ofstream (filenameBall.c_str());
+		ball_ofstream << "" << " " << "-0.10" << " " << "0.27" << std::endl;
+
+	}
+}
+
+int main()
+{
+	std::cout << "OMPL version: " << OMPL_VERSION << std::endl;
+
+	planWithSimpleSetup(); // Using the ompl::geometric::SimpleSetup Class
+
+	return 0;
+}
